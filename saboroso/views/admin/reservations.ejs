@@ -57,7 +57,6 @@
                     <small>fulano@hcode.com.br</small>
                   </p>
                 </li>
-
                 <!-- Menu Footer-->
                 <li class="user-footer">
                   <div class="pull-left">
@@ -101,13 +100,13 @@
               <span>Tela Inicial</span>
             </a>
           </li>
-          <li class="active">
+          <li>
             <a href="menus.html">
               <i class="fa fa-cutlery"></i>
               <span>Menu</span>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="reservations.html">
               <i class="fa fa-calendar-check-o"></i>
               <span>Reservas</span>
@@ -142,11 +141,11 @@
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Menu
+          Reservas
         </h1>
         <ol class="breadcrumb">
           <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-          <li class="active">Menu</li>
+          <li class="active">Reservas</li>
         </ol>
       </section>
 
@@ -157,7 +156,34 @@
           <div class="box-header">
             <h3 class="box-title">Lista</h3>
             <a href="#" class="btn btn-xs pull-right btn-success" data-toggle="modal" data-target="#modal-create"><i
-                class="fa fa-plus"></i> Novo</a>
+                class="fa fa-plus"></i>
+              Novo</a>
+          </div>
+          <div class="box-header" style="height:44px;">
+
+            <div class="box-tools">
+              <form action="">
+                <div class="form-group" style="width: 182px; float: left">
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="date" name="start" class="form-control unstyled" value="<%= date.start %>">
+                  </div>
+                </div>
+                <div class="form-group" style="width: 182px; float: left">
+                  <div class="input-group">
+                    <div class="input-group-addon">
+                      até
+                    </div>
+                    <input type="date" name="end" class="form-control unstyled" value="<%= date.end %>">
+                  </div>
+                </div>
+                <div class="form-group" style="float: left; margin-left: 7px;">
+                  <button type="submit" class="btn btn-default">OK</button>
+                </div>
+              </form>
+            </div>
           </div>
           <!-- /.box-header -->
           <div class="box-body no-padding">
@@ -165,28 +191,41 @@
               <thead>
                 <tr>
                   <th style="width: 10px">#</th>
-                  <th>Foto</th>
-                  <th>Título</th>
-                  <th>Descrição</th>
-                  <th>Preço</th>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Pessoas</th>
+                  <th>Data</th>
+                  <th>Hora</th>
                   <th style="min-width: 134px;">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>1.</td>
-                  <td><img src="dist/img/boxed-bg.jpg" alt="" style="height: 18px;"></td>
-                  <td>Update software</td>
-                  <td>Diuretics paradis num copo é motivis de denguis.</td>
-                  <td>R$1,99</td>
-                  <td><button type="button" class="btn btn-xs btn-info btn-update" data-toggle="modal" data-target="#modal-update"><i
-                        class="fa fa-pencil"></i> Editar</button>&nbsp;<button type="button" class="btn btn-xs btn-danger btn-delete"><i
-                        class="fa fa-trash"></i> Excluir</button></td>
+                  <td>Hcode</td>
+                  <td>contato@hcode.com.br</td>
+                  <td>2</td>
+                  <td>1/1/2019</td>
+                  <td>10:30</td>
+                  <td><button type="button" class="btn btn-xs btn-info btn-update" data-toggle="modal"
+                      data-target="#modal-update"><i class="fa fa-pencil"></i> Editar</button>&nbsp;<button
+                      type="button" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
+                      Excluir</button></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <!-- /.box-body -->
+          <div class="box-footer clearfix">
+            <ul class="pagination pagination-sm no-margin pull-right">
+              <li class="active"><a href="#">«</a></li>
+              <li><a href="#">1</a></li>
+              <li><a href="#">2</a></li>
+              <li><a href="#">3</a></li>
+              <li><a href="#">»</a></li>
+            </ul>
+          </div>
+          <!-- /.box-footer -->
         </div>
 
       </section>
@@ -202,25 +241,35 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <h4 class="modal-title">Novo Menu</h4>
+              <h4 class="modal-title">Nova Reserva</h4>
             </div>
             <div class="modal-body">
               <div class="form-group">
-                <label for="inputTitleCreate">Título</label>
-                <input type="text" class="form-control" id="inputTitleCreate" name="title">
+                <label for="inputNameCreate">Nome</label>
+                <input type="text" class="form-control" id="inputNameCreate" name="name">
               </div>
               <div class="form-group">
-                <label for="inputDescriptionCreate">Descrição</label>
-                <textarea class="form-control" id="inputDescriptionCreate" name="description"></textarea>
+                <label for="inputEmailCreate">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailCreate" name="email">
               </div>
               <div class="form-group">
-                <label for="inputPriceCreate">Preço</label>
-                <input type="number" class="form-control" id="inputPriceCreate" name="price">
+                <label for="inputPeopleCreate">Pessoas</label>
+                <select id="inputPeopleCreate" name="people" class="form-control">
+                  <option value=""> -- selecione -- </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5+</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="inputPhotoCreate">Foto</label>
-                <img style="max-width: 128px; max-height: 128px; display: block;" src="dist/img/boxed-bg.jpg">
-                <input type="file" class="form-control" id="inputPhotoCreate" name="photo">
+                <label for="inputDateCreate">Data</label>
+                <input type="date" id="inputDateCreate" name="date" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="inputTimeCreate">Hora</label>
+                <input type="time" id="inputTimeCreate" name="time" class="form-control">
               </div>
             </div>
             <div class="modal-footer">
@@ -243,25 +292,35 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <h4 class="modal-title">Editar Menu</h4>
+              <h4 class="modal-title">Editar Reserva</h4>
             </div>
             <div class="modal-body">
               <div class="form-group">
-                <label for="inputTitleUpdate">Título</label>
-                <input type="text" class="form-control" id="inputTitleUpdate" name="title">
+                <label for="inputNameUpdate">Nome</label>
+                <input type="text" class="form-control" id="inputNameUpdate" name="name">
               </div>
               <div class="form-group">
-                <label for="inputDescriptionUpdate">Descrição</label>
-                <textarea class="form-control" id="inputDescriptionUpdate" name="description"></textarea>
+                <label for="inputEmailUpdate">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailUpdate" name="email">
               </div>
               <div class="form-group">
-                <label for="inputPriceUpdate">Preço</label>
-                <input type="number" class="form-control" id="inputPriceUpdate" name="price">
+                <label for="inputPeopleUpdate">Pessoas</label>
+                <select id="inputPeopleUpdate" name="people" class="form-control">
+                  <option value=""> -- selecione -- </option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5+</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="inputPhotoUpdate">Foto</label>
-                <img style="max-width: 128px; max-height: 128px; display: block;" src="dist/img/boxed-bg.jpg">
-                <input type="file" class="form-control" id="inputPhotoUpdate" name="photo">
+                <label for="inputDateUpdate">Data</label>
+                <input type="date" id="inputDateUpdate" name="date" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="inputTimeUpdate">Hora</label>
+                <input type="time" id="inputTimeUpdate" name="time" class="form-control">
               </div>
             </div>
             <div class="modal-footer">

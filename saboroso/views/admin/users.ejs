@@ -22,7 +22,7 @@
     <header class="main-header">
 
       <!-- Logo -->
-      <a href="index.html" class="logo">
+      <a href="index2.html" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
         <span class="logo-mini">HCODE</span>
         <!-- logo for regular state and mobile devices -->
@@ -51,6 +51,7 @@
                 <!-- The user image in the menu -->
                 <li class="user-header">
                   <img src="dist/img/avatar5.png" class="img-circle" alt="User Image">
+
                   <p>
                     Fulano Junior
                     <small>fulano@hcode.com.br</small>
@@ -111,13 +112,13 @@
               <span>Reservas</span>
             </a>
           </li>
-          <li class="active">
+          <li>
             <a href="contacts.html">
               <i class="fa fa-comments"></i>
               <span>Contatos</span>
             </a>
           </li>
-          <li>
+          <li class="active">
             <a href="users.html">
               <i class="fa fa-users"></i>
               <span>Usuários</span>
@@ -140,11 +141,11 @@
       <!-- Content Header (Page header) -->
       <section class="content-header">
         <h1>
-          Contatos
+          Usuários
         </h1>
         <ol class="breadcrumb">
           <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-          <li class="active">Contatos</li>
+          <li class="active">Usuários</li>
         </ol>
       </section>
 
@@ -154,6 +155,8 @@
         <div class="box">
           <div class="box-header">
             <h3 class="box-title">Lista</h3>
+            <a href="#" class="btn btn-xs pull-right btn-success" data-toggle="modal" data-target="#modal-create"><i
+                class="fa fa-plus"></i> Novo</a>
           </div>
           <!-- /.box-header -->
           <div class="box-body no-padding">
@@ -163,8 +166,7 @@
                   <th style="width: 10px">#</th>
                   <th>Nome</th>
                   <th>E-mail</th>
-                  <th>Mensagem</th>
-                  <th style="min-width: 75px;">Ações</th>
+                  <th style="min-width: 134px;">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -172,12 +174,15 @@
                   <td>1.</td>
                   <td>Hcode</td>
                   <td>contato@hcode.com.br</td>
-                  <td>Mussum Ipsum, cacilds vidis litro abertis. Manduma pindureta quium dia nois paga. Viva Forevis
-                    aptent taciti sociosqu ad
-                    litora torquent. In elementis mé pra quem é amistosis quis leo. Admodum accumsan disputationi eu
-                    sit. Vide electram sadipscing
-                    et per.</td>
-                  <td><button type="button" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i> Excluir</button></td>
+                  <td>
+                    <button type="button" class="btn btn-xs btn-info" data-toggle="modal" data-target="#modal-update"><i
+                        class="fa fa-pencil"></i> Editar</button>&nbsp;
+                    <button type="button" class="btn btn-xs btn-warning btn-update" data-toggle="modal"
+                      data-target="#modal-update-password">
+                      <i class="fa fa-lock"></i> Alterar Senha</button>&nbsp;
+                    <button type="button" class="btn btn-xs btn-danger btn-delete"><i class="fa fa-trash"></i>
+                      Excluir</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -189,6 +194,105 @@
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+
+    <div class="modal fade" id="modal-update-password">
+      <div class="modal-dialog">
+        <div class="modal-content" style="border-top: 3px solid #f39c12;">
+          <form method="post">
+            <input type="hidden" name="id">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Alterar Senha</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="inputPassword">Nova Senha</label>
+                <input type="password" class="form-control" id="inputPassword" name="password">
+              </div>
+              <div class="form-group">
+                <label for="inputPasswordConfirm">Confirmar Senha</label>
+                <input type="password" class="form-control" id="inputPasswordConfirm" name="passwordConfirm">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-warning">Salvar</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-create">
+      <div class="modal-dialog">
+        <div class="modal-content" style="border-top: 3px solid #00a65a;">
+          <form method="post">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Nova Usuário</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="inputNameCreate">Nome</label>
+                <input type="text" class="form-control" id="inputNameCreate" name="name">
+              </div>
+              <div class="form-group">
+                <label for="inputEmailCreate">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailCreate" name="email">
+              </div>
+              <div class="form-group">
+                <label for="inputPasswordCreate">Senha</label>
+                <input type="password" class="form-control" id="inputPasswordCreate" name="password">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal-update">
+      <div class="modal-dialog">
+        <div class="modal-content" style="border-top: 3px solid #00c0ef;">
+          <form method="post">
+            <input type="hidden" name="id">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Editar Usuário</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="inputNameUpdate">Nome</label>
+                <input type="text" class="form-control" id="inputNameUpdate" name="name">
+              </div>
+              <div class="form-group">
+                <label for="inputEmailUpdate">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailUpdate" name="email">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-info">Salvar</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
 
     <!-- Main Footer -->
     <footer class="main-footer">
@@ -217,6 +321,19 @@
   <!-- AdminLTE for demo purposes -->
   <script src="dist/js/demo.js"></script>
   <!-- page script -->
+  <script type="text/javascript">
+    // To make Pace works on Ajax calls
+    $(document).ajaxStart(function () {
+      Pace.restart()
+    })
+    $('.ajax').click(function () {
+      $.ajax({
+        url: '#', success: function (result) {
+          $('.ajax-content').html('<hr>Ajax Request Completed !')
+        }
+      })
+    })
+  </script>
 
 </body>
 
