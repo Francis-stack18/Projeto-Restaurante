@@ -1,17 +1,3 @@
-<!DOCTYPE HTML>
-<html>
-<%- include("inc/head.ejs") -%>
-
-	<body>
-		<div class="gtco-loader"></div>
-		<div id="page">
-			<%- include('inc/header-menu') -%>
-				<%- include('inc/header') -%>
-					<%- include('inc/content/reservations.ejs') -%>
-						<%- include('inc/footer.ejs') -%>
-		</div>
-		<%- include('inc/footer-gototop.ejs') -%>
-			<%- include('inc/footer-scripts.ejs') -%>
-	</body>
-
-</html>
+<%- include('inc/page-header.ejs') -%>
+	<%- include('inc/content/reservations.ejs') -%>
+		<%- include('inc/page-footer.ejs') -%>
