@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var formidable = require("formidable");
 require("dotenv").config();
 
 var session = require("express-session");
@@ -13,6 +14,28 @@ var indexRouter = require("./routes/index");
 var adminRouter = require("./routes/admin");
 
 var app = express();
+
+app.use(function (req, res, next) {
+  let isMultipart =
+    req.headers["content-type"] &&
+    req.headers["content-type"].includes("multipart/form-data");
+
+  if (req.method === "POST" && isMultipart) {
+    var form = new formidable.IncomingForm({
+      uploadDir: path.join(__dirname, "/public/images"),
+      keepExtensions: true,
+    });
+
+    form.parse(req, function (err, fields, files) {
+      req.body = fields;
+      req.fields = fields;
+      req.files = files;
+      next();
+    });
+  } else {
+    next();
+  }
+});
 
 var redisClient = redis.createClient({
   host: "127.0.0.1",
