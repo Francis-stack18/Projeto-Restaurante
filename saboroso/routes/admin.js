@@ -6,6 +6,9 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/login", function (req, res, next) {
+  if (!req.session.views) req.session.views = 0;
+
+  console.log("SESSION:", req.session.views++);
   res.render("admin/login", {});
 });
 
