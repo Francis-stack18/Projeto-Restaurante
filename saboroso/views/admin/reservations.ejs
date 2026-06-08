@@ -79,7 +79,7 @@
                     <%= row.people %>
                   </td>
                   <td>
-                    <%= row.date %>
+                    <%= moment(row.date).format("DD [de] MMMM [de] YYYY") %>
                   </td>
                   <td>
                     <%= row.time %>
