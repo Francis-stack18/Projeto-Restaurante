@@ -49,6 +49,7 @@ router.get("/login", function (req, res, next) {
 });
 
 router.post("/login", function (req, res, next) {
+  console.log(req.body);
   if (!req.body.email) {
     users.render(req, res, "Preencha o campo e-mail.");
   } else if (!req.body.password) {
