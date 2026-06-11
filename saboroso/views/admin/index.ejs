@@ -25,7 +25,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Reservas</span>
-              <span class="info-box-number">
+              <span class="info-box-number" id="nrreservations">
                 <%= data.nrreservations %>
               </span>
             </div>
@@ -42,7 +42,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Contatos</span>
-              <span class="info-box-number">
+              <span class="info-box-number" id="nrcontacts">
                 <%= data.nrcontacts %>
               </span>
             </div>
@@ -63,7 +63,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Menu</span>
-              <span class="info-box-number">
+              <span class="info-box-number" id="nrmenus">
                 <%= data.nrmenus %>
               </span>
             </div>
@@ -80,7 +80,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Usuários</span>
-              <span class="info-box-number">
+              <span class="info-box-number" id="nrusers">
                 <%= data.nrusers %>
               </span>
             </div>
@@ -96,3 +96,21 @@
   </div>
   <!-- /.content-wrapper -->
   <%- include("inc/footer.ejs") -%>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      function refreshDashboard() {
+        fetch('/admin/dashboard').then(response => response.json()).then(json => {
+          document.querySelector("#nrreservations").innerHTML = json.nrreservations;
+          document.querySelector("#nrcontacts").innerHTML = json.nrcontacts;
+          document.querySelector("#nrmenus").innerHTML = json.nrmenus;
+          document.querySelector("#nrusers").innerHTML = json.nrusers;
+        })
+      }
+
+      let socket = io();
+
+      socket.on("dashboard update", function (data) {
+        refreshDashboard();
+      })
+    </script>
