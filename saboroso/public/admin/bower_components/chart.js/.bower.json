@@ -1,0 +1,15 @@
+{
+  "name": "chart.js",
+  "homepage": "https://github.com/chartjs/Chart.js",
+  "version": "4.5.1",
+  "_release": "4.5.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v4.5.1",
+    "commit": "9c5cf9fac7ec04a71b516e2aff3f7d76876be369"
+  },
+  "_source": "https://github.com/chartjs/Chart.js.git",
+  "_target": "^4.5.1",
+  "_originalSource": "chart.js",
+  "_direct": true
+}
