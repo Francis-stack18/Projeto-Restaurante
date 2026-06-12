@@ -32,6 +32,7 @@ module.exports = function (io) {
   });
 
   router.get("/", function (req, res, next) {
+    console.log("A requisição chegou na rota raiz ( / ) !");
     admin
       .dashbord()
       .then((data) => {
@@ -43,7 +44,8 @@ module.exports = function (io) {
         );
       })
       .catch((err) => {
-        console.error(err);
+        console.error("ERRO NO BANCO DE DADOS (MySQL):", err);
+        res.send("Erro interno do banco de dados.");
       });
   });
 

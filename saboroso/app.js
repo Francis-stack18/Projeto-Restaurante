@@ -5,22 +5,22 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var formidable = require("formidable");
 require("dotenv").config();
-var http = require("http");
-var socket = require("socket.io");
 var bodyParser = require("body-parser");
-
 var session = require("express-session");
-var RedisStore = require("connect-redis")(session);
-var redis = require("redis");
+
+var app = express();
+var http = require("http").Server(app);
+var io = require("socket.io")(http);
+
+io.on("connection", function (socket) {
+  console.log("Novo usuário conectado via Socket.io!");
+});
 
 var indexRouter = require("./routes/index")(io);
 var adminRouter = require("./routes/admin")(io);
 
-var app = express();
-
-var http = http.Server(app);
-var io = socket(http);
-io.on("connection", function (socket) {});
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 app.use(function (req, res, next) {
   let isMultipart =
@@ -44,19 +44,8 @@ app.use(function (req, res, next) {
   }
 });
 
-var redisClient = redis.createClient({
-  host: "127.0.0.1",
-  port: 6379,
-});
-
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
 app.use(
   session({
-    store: new RedisStore({
-      client: redisClient,
-    }),
     secret: "Password",
     resave: false,
     saveUninitialized: true,
@@ -64,7 +53,6 @@ app.use(
 );
 
 app.use(logger("dev"));
-
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -85,5 +73,5 @@ app.use(function (err, req, res, next) {
 });
 
 http.listen(3000, function () {
-  console.log("Servidor rodando");
+  console.log("Servidor rodando na porta 3000");
 });
