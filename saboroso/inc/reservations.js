@@ -89,6 +89,47 @@ module.exports = {
     });
   },
 
+  export(req) {
+    return new Promise((resolve, reject) => {
+      let dtstart = req.query.start;
+      let dtend = req.query.end;
+      let params = [];
+
+      let query = `SELECT * FROM tb_reservations`;
+
+      if (dtstart && dtend) {
+        query += ` WHERE date BETWEEN ? AND ?`;
+        params.push(dtstart, dtend);
+      }
+
+      query += ` ORDER BY date DESC, time DESC`;
+
+      conn.query(query, params, (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  },
+
+  getReservation(id) {
+    return new Promise((resolve, reject) => {
+      conn.query(
+        `SELECT * FROM tb_reservations WHERE id = ?`,
+        [id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(results[0]);
+          }
+        },
+      );
+    });
+  },
+
   delete(id) {
     return new Promise((resolve, reject) => {
       conn.query(

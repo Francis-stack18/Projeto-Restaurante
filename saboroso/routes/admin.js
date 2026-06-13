@@ -7,6 +7,7 @@ var reservations = require("../inc/reservations");
 var moment = require("moment");
 var contacts = require("../inc/contacts");
 var emails = require("../inc/emails");
+var mailer = require("../inc/mailer");
 
 module.exports = function (io) {
   moment.locale("pt-BR");
@@ -187,6 +188,28 @@ module.exports = function (io) {
     });
   });
 
+  router.get("/reservations/export", function (req, res, next) {
+    reservations
+      .export(req)
+      .then((data) => {
+        let csv = "ID;Nome;E-mail;Pessoas;Data;Hora\n";
+
+        data.forEach((row) => {
+          let formattedDate = moment(row.date).format("DD/MM/YYYY");
+
+          csv += `${row.id};${row.name};${row.email};${row.people};${formattedDate};${row.time}\n`;
+        });
+
+        res.header("Content-Type", "text/csv; charset=utf-8");
+        res.attachment("relatorio-reservas.csv");
+
+        res.send("\uFEFF" + csv);
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  });
+
   router.get("/reservations/chart", function (req, res, next) {
     req.query.start = req.query.start
       ? req.query.start
@@ -201,23 +224,188 @@ module.exports = function (io) {
   });
 
   router.post("/reservations", function (req, res, next) {
-    reservations
-      .save(req.fields, req.files)
-      .then((results) => {
-        io.emit("dashboard update");
-        res.send(results);
-      })
-      .catch((err) => {
-        res.send(err);
-      });
+    if (parseInt(req.body.id) > 0) {
+      reservations
+        .getReservation(req.body.id)
+        .then((oldData) => {
+          reservations
+            .save(req.body)
+            .then((results) => {
+              io.emit("dashboard update");
+              res.send(results);
+
+              let oldDate = moment(oldData.date).format("DD/MM/YYYY");
+              let newDate = moment(req.body.date).format("DD/MM/YYYY");
+
+              let updateHtml = `
+                <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px; margin: 0;">
+                  <div style="max-width: 650px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                    
+                    <div style="background-color: #232323; padding: 30px 20px; text-align: center;">
+                      <h1 style="margin: 0; font-size: 28px; letter-spacing: 2px; font-family: Arial, sans-serif; font-weight: bold;">
+                        <span style="color: #ffffff; text-transform: uppercase;">Saboroso</span><span style="color: #f39c12; font-style: italic; font-family: 'Georgia', 'Times New Roman', serif; margin-left: 3px;">!</span>
+                      </h1>
+                    </div>
+                    
+                    <div style="padding: 30px; color: #333333;">
+                      <h2 style="margin-top: 0; color: #2c3e50;">Olá, ${req.body.name}!</h2>
+                      <p style="font-size: 16px; line-height: 1.6; color: #555555;">
+                        Sua reserva foi <strong>atualizada</strong> pelo administrador do restaurante. Veja abaixo o comparativo com as alterações realizadas:
+                      </p>
+                      
+                      <div style="margin: 30px 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                          <tr>
+                            <td style="width: 48%; background-color: #f5f5f5; border-left: 5px solid #7f8c8d; padding: 15px; border-radius: 0 4px 4px 0; vertical-align: top;">
+                              <h4 style="margin: 0 0 10px 0; color: #7f8c8d; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Reserva Anterior</h4>
+                              <p style="margin: 5px 0; font-size: 14px;"><strong>📅 Data:</strong> ${oldDate}</p>
+                              <p style="margin: 5px 0; font-size: 14px;"><strong>⏰ Hora:</strong> ${oldData.time}</p>
+                              <p style="margin: 5px 0; font-size: 14px;"><strong>👥 Pessoas:</strong> ${oldData.people}</p>
+                            </td>
+                            
+                            <td style="width: 4%;"></td>
+                            
+                            <td style="width: 48%; background-color: #f0f9eb; border-left: 5px solid #27ae60; padding: 15px; border-radius: 0 4px 4px 0; vertical-align: top;">
+                              <h4 style="margin: 0 0 10px 0; color: #27ae60; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Nova Reserva Atualizada</h4>
+                              <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;"><strong>📅 Data:</strong> ${newDate}</p>
+                              <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;"><strong>⏰ Hora:</strong> ${req.body.time}</p>
+                              <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;"><strong>👥 Pessoas:</strong> ${req.body.people}</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                      
+                      <p style="font-size: 16px; line-height: 1.6; color: #555555;">
+                        Se as novas informações estiverem corretas, nenhuma ação é necessária. Estamos prontos para receber você!
+                      </p>
+                      
+                      <p style="font-size: 16px; line-height: 1.6; color: #555555; margin-top: 30px;">
+                        Atenciosamente,<br>
+                        <strong style="color: #2c3e50;">Equipe Restaurante Saboroso</strong>
+                      </p>
+                    </div>
+                    
+                    <div style="background-color: #ecf0f1; padding: 15px; text-align: center; font-size: 12px; color: #7f8c8d;">
+                      <p style="margin: 0;">Este é um e-mail automático enviado devido a uma alteração cadastral.</p>
+                      <p style="margin: 5px 0 0 0;">&copy; ${new Date().getFullYear()} Restaurante Saboroso. Todos os direitos reservados.</p>
+                    </div>
+                    
+                  </div>
+                </div>
+              `;
+
+              mailer
+                .send(
+                  req.body.email,
+                  "Sua reserva foi atualizada! - Restaurante Saboroso",
+                  updateHtml,
+                )
+                .then(() =>
+                  console.log(
+                    "E-mail de atualização enviado para: " + req.body.email,
+                  ),
+                )
+                .catch((err) =>
+                  console.error("Falha ao enviar e-mail de atualização: ", err),
+                );
+            })
+            .catch((err) => {
+              res.send(err);
+            });
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    } else {
+      reservations
+        .save(req.body)
+        .then((results) => {
+          io.emit("dashboard update");
+          res.send(results);
+        })
+        .catch((err) => {
+          res.send(err);
+        });
+    }
   });
 
   router.delete("/reservations/:id", function (req, res, next) {
     reservations
-      .delete(req.params.id)
-      .then((results) => {
-        io.emit("dashboard update");
-        res.send(results);
+      .getReservation(req.params.id)
+      .then((dadosReserva) => {
+        reservations
+          .delete(req.params.id)
+          .then((results) => {
+            io.emit("dashboard update");
+            res.send(results);
+
+            let formattedDate = moment(dadosReserva.date).format("DD/MM/YYYY");
+
+            let cancelHtml = `
+            <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 30px; margin: 0;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                
+                <div style="background-color: #232323; padding: 30px 20px; text-align: center;">
+                  <h1 style="margin: 0; font-size: 28px; letter-spacing: 2px; font-family: Arial, sans-serif; font-weight: bold;">
+                    <span style="color: #ffffff; text-transform: uppercase;">Saboroso</span><span style="color: #f39c12; font-style: italic; font-family: 'Georgia', 'Times New Roman', serif; margin-left: 3px;">!</span>
+                  </h1>
+                </div>
+                
+                <div style="padding: 30px; color: #333333;">
+                  <h2 style="margin-top: 0; color: #2c3e50;">Olá, ${dadosReserva.name}!</h2>
+                  <p style="font-size: 16px; line-height: 1.6; color: #555555;">
+                    Informamos que a sua reserva detalhada abaixo foi <strong style="color: #e74c3c;">cancelada</strong> em nosso sistema.
+                  </p>
+                  
+                  <div style="background-color: #f9f9f9; border-left: 5px solid #e74c3c; padding: 15px 20px; margin: 25px 0; border-radius: 0 4px 4px 0;">
+                    <p style="margin: 8px 0; font-size: 16px;">
+                      <strong style="color: #2c3e50;">📅 Data:</strong> ${formattedDate}
+                    </p>
+                    <p style="margin: 8px 0; font-size: 16px;">
+                      <strong style="color: #2c3e50;">⏰ Hora:</strong> ${dadosReserva.time}
+                    </p>
+                    <p style="margin: 8px 0; font-size: 16px;">
+                      <strong style="color: #2c3e50;">👥 Pessoas:</strong> ${dadosReserva.people}
+                    </p>
+                  </div>
+                  
+                  <p style="font-size: 16px; line-height: 1.6; color: #555555;">
+                    Se isso foi um engano ou se desejar agendar uma nova data, por favor, acesse nosso site ou responda a este e-mail.
+                  </p>
+                  
+                  <p style="font-size: 16px; line-height: 1.6; color: #555555; margin-top: 30px;">
+                    Atenciosamente,<br>
+                    <strong style="color: #2c3e50;">Equipe Restaurante Saboroso</strong>
+                  </p>
+                </div>
+                
+                <div style="background-color: #ecf0f1; padding: 15px; text-align: center; font-size: 12px; color: #7f8c8d;">
+                  <p style="margin: 0;">Este é um e-mail automático.</p>
+                  <p style="margin: 5px 0 0 0;">&copy; ${new Date().getFullYear()} Restaurante Saboroso. Todos os direitos reservados.</p>
+                </div>
+                
+              </div>
+            </div>
+            `;
+
+            mailer
+              .send(
+                dadosReserva.email,
+                "Reserva Cancelada - Restaurante Saboroso",
+                cancelHtml,
+              )
+              .then(() =>
+                console.log(
+                  "E-mail de cancelamento enviado para: " + dadosReserva.email,
+                ),
+              )
+              .catch((err) =>
+                console.error("Falha ao enviar e-mail de cancelamento: ", err),
+              );
+          })
+          .catch((err) => {
+            res.send(err);
+          });
       })
       .catch((err) => {
         res.send(err);
